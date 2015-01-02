@@ -30,7 +30,6 @@ func revocationdump(pos int) {
 	rv := b.(*RevocationRecord)
 	blocks := rv.ReadAll(rr, *u64)
 	for _, block := range blocks {
-		// TODO provide a way to map journal file blocks to device block numbers
-		fmt.Printf("%d\n", block)
+		fmt.Printf("0x%08X\n", block - *first)
 	}
 }
