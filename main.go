@@ -68,6 +68,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "  summary - print a summary of all journal blocks\n")
 		fmt.Fprintf(os.Stderr, "  descdump.nnn - print a summary of the descriptor block at nnn and respective data blocks\n")
 		fmt.Fprintf(os.Stderr, "  commitdump.nnn - print a summary of the commit record block at nnn\n")
+		fmt.Fprintf(os.Stderr, "  revocationdump.nnn - print a summary of the revocation record block at nnn\n")
 		fmt.Fprintf(os.Stderr, "all nnn values are BYTE OFFSETS and may be octal with a leading 0 or hexadecimal with a leading 0x or 0X; decimal otherwise\n")
 	}
 	flag.Parse()
@@ -95,6 +96,9 @@ func main() {
 	case strings.HasPrefix(command, "commitdump."):
 		pos := getpos(command)
 		commitdump(pos)
+	case strings.HasPrefix(command, "revocationdump."):
+		pos := getpos(command)
+		revocationdump(pos)
 	default:
 		badline("unrecognized command %q", command)
 	}
