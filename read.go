@@ -94,7 +94,7 @@ func readDescriptors(r io.Reader, u64 bool, v3 bool) (d []Descriptor, uuids []*[
 	return d, uuids
 }
 
-func readDataBlock(r io.Reader, d Descriptor) []byte {
+func readDataBlock(r io.Reader, escaped bool) []byte {
 	p := make([]byte, blocksize)
 	n, err := r.Read(p)
 	if err != nil {
@@ -102,7 +102,7 @@ func readDataBlock(r io.Reader, d Descriptor) []byte {
 	} else if n != blocksize {
 		panic(fmt.Errorf("errorless short read of data block (expected %d, got %d)", blocksize, n))
 	}
-	if (d.Flags() & Escaped) != 0 {
+	if escaped {
 		Endian.PutUint32(p, BlockMagic)
 	}
 	return p

@@ -17,6 +17,7 @@ var blocksize int
 var (
 	u64 = flag.Bool("64", false, "use 64-bit block numbers")
 	v3 = flag.Bool("3", false, "use version 3 checksums")
+	escaped = flag.Bool("e", false, "blockdump: block is escaped")
 )
 func init() {
 	flag.IntVar(&blocksize, "bs", 4096, "block size (bytes)")
@@ -69,6 +70,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "  descdump.nnn - print a summary of the descriptor block at nnn and respective data blocks\n")
 		fmt.Fprintf(os.Stderr, "  commitdump.nnn - print a summary of the commit record block at nnn\n")
 		fmt.Fprintf(os.Stderr, "  revocationdump.nnn - print a summary of the revocation record block at nnn\n")
+		fmt.Fprintf(os.Stderr, "  blockdump.nnn - dump block nnn to standard output; mind the -e flag (watch descdump output)")
 		fmt.Fprintf(os.Stderr, "all nnn values are BYTE OFFSETS and may be octal with a leading 0 or hexadecimal with a leading 0x or 0X; decimal otherwise\n")
 	}
 	flag.Parse()
@@ -99,6 +101,9 @@ func main() {
 	case strings.HasPrefix(command, "revocationdump."):
 		pos := getpos(command)
 		revocationdump(pos)
+	case strings.HasPrefix(command, "blockdump."):
+		pos := getpos(command)
+		blockdump(pos)
 	default:
 		badline("unrecognized command %q", command)
 	}
