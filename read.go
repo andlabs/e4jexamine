@@ -16,7 +16,7 @@ func read(r io.Reader, s interface{}) {
 
 func getblock(r io.Reader) (header *Header, block interface{}) {
 	header = new(Header)
-	read(r, &header)
+	read(r, header)
 	if header.Magic != BlockMagic {
 		return nil, nil
 	}
@@ -25,19 +25,19 @@ func getblock(r io.Reader) (header *Header, block interface{}) {
 		return header, nil
 	case CommitRecordBlock:
 		cb := new(CommitRecord)
-		read(r, &cb)
+		read(r, cb)
 		return header, cb
 	case SuperblockV1Block:
 		sb := new(SuperblockV1)
-		read(r, &sb)
+		read(r, sb)
 		return header, sb
 	case SuperblockV2Block:
 		sb := new(SuperblockV2)
-		read(r, &sb)
+		read(r, sb)
 		return header, sb
 	case RevocationRecordsBlock:
 		rr := new(RevocationRecord)
-		read(r, &rr)
+		read(r, rr)
 		return header, rr
 	}
 	return nil, fmt.Errorf("unrecognized block type %d", header.BlockType)
