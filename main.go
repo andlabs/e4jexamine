@@ -29,16 +29,35 @@ func badline(format string, args ...interface{}) {
 	os.Exit(1)
 }
 
-func getpos(command string) int64 {
+func getpos(command string) int {
 	m := strings.Split(command, ".")
 	if len(m) != 2 {
 		badline("invalid command specification: %s", command)
 	}
-	n, err := strconv.ParseInt(m[1], 0, 64)
+	n, err := strconv.ParseInt(m[1], 0, 0)
 	if err != nil {
 		badline("error parsing command number %q: %v", m[1], err)
 	}
-	return n
+	if int(n) % blocksize != 0 {
+		badline("specified position (0x%X) is not on a block boundary (%d bytes)", int(n), blocksize)
+	}
+	return int(n)
+}
+
+// TODO really pass in r?
+func readblock(r io.Reader, p []byte) bool {
+	if len(p) != blocksize {
+		panic("BUG - readblock() handed wrong size buffer (contact andlabs)")
+	}
+	n, err := r.Read(p)
+	if err == io.EOF {
+		return false
+	} else if err != nil {
+		panic(err)
+	} else if n != blocksize {
+		panic(fmt.Errorf("errorless short read reading block from journal file (expected %d got %d)", blocksize, n))
+	}
+	return true
 }
 
 func main() {
@@ -71,7 +90,7 @@ func main() {
 		summary()
 	case strings.HasPrefix(command, "descdump."):
 		pos := getpos(command)
-		fmt.Println(pos)
+		descdump(pos)
 	default:
 		badline("unrecognized command %q", command)
 	}

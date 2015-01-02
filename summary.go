@@ -3,7 +3,6 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"bytes"
 )
 
@@ -11,15 +10,7 @@ func summary() {
 	var pos int
 
 	p := make([]byte, blocksize)
-	for pos = 0; ; pos += blocksize {
-		n, err := r.Read(p)
-		if err == io.EOF {
-			break
-		} else if err != nil {
-			panic(err)
-		} else if n != blocksize {
-			panic(fmt.Errorf("errorless short read reading block from journal file (expected %d got %d)", blocksize, n))
-		}
+	for pos = 0; readblock(r, p); pos += blocksize {
 		rr := bytes.NewReader(p)
 		h, b := getblock(rr)
 		if h == nil {
