@@ -9,7 +9,13 @@ BEGIN {
 }
 { print }
 /descriptor/ {
-	cmd = sprintf("./e4jexamine descdump.%s %s", $1, file)
+	subcmd("descdump", $1)
+}
+/commit/ {
+	subcmd("commitdump", $1)
+}
+function subcmd(which, addr,		cmd) {
+	cmd = sprintf("./e4jexamine %s.%s %s", which, addr, file)
 	while (cmd | getline)
 		printf "\t%s\n", $0
 	close(cmd)
