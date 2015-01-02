@@ -4,6 +4,7 @@
 # TODO check for errors
 BEGIN {
 	# TODO make sure this is sufficient to alter ARGC/ARGV
+	# TODO actually check and complain
 	file = ARGV[1]
 	ARGC = 1
 }
