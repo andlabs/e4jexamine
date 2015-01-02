@@ -3,28 +3,13 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"io"
 	"bytes"
 )
 
-var r io.Reader
+func summary() {
+	var pos int
 
-const blocksize = 4096
-
-func main() {
-	var pos int64
-
-	if len(os.Args) == 0 {
-		r = os.Stdin
-	} else {
-		f, err := os.Open(os.Args[1])
-		if err != nil {
-			panic(err)
-		}
-		defer f.Close()
-		r = f
-	}
 	p := make([]byte, blocksize)
 	for pos = 0; ; pos += blocksize {
 		n, err := r.Read(p)
