@@ -29,6 +29,10 @@ func descdump(pos int) {
 	d, _ := readDescriptors(rr, *u64, *v3)
 	for _, dd := range d {
 		pos += blocksize
-		fmt.Printf("0x%08X -> block %d\n", pos, dd.TargetBlock())
+		fmt.Printf("0x%08X -> block %d", pos, dd.TargetBlock())
+		if (dd.Flags() & Escaped) != 0 {
+			fmt.Printf(" [escaped]")
+		}
+		fmt.Printf("\n")
 	}
 }
